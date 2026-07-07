@@ -1,2 +1,141 @@
-hnrynj
-vtd
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estúdio de Pixel Art</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1>Pixel Art Studio 🎨</h1>
+
+    <div class="controls">
+        <input type="color" id="colorPicker" value="#ff0000">
+        <button id="clearBtn">Limpar Tela</button>
+        <button id="exportBtn">Exportar PNG</button>
+    </div>
+
+    <div id="canvas-container">
+        <div id="pixel-board"></div>
+    </div>
+
+    <script href="script.js"></script>
+</body>
+</html>
+body {
+    background-color: #1a1a1a;
+    color: #fff;
+    font-family: 'Courier New', Courier, monospace;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+h1 {
+    margin-bottom: 10px;
+}
+
+.controls {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+button {
+    background-color: #333;
+    color: #fff;
+    border: 2px solid #555;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    background-color: #555;
+}
+
+/* A Grade de Pixel (16x16) */
+#pixel-board {
+    display: grid;
+    grid-template-columns: repeat(16, 25px);
+    grid-template-rows: repeat(16, 25px);
+    border: 4px solid #fff;
+    box-shadow: 0px 0px 15px rgba(0,0,0,0.5);
+}
+
+/* Cada quadradinho da grade */
+.pixel {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    cursor: crosshair;
+    transition: background-color 0.1s;
+}
+const board = document.getElementById('pixel-board');
+const colorPicker = document.getElementById('colorPicker');
+const clearBtn = document.getElementById('clearBtn');
+const exportBtn = document.getElementById('exportBtn');
+
+const GRID_SIZE = 16; // Grade de 16x16
+
+// 1. Cria a grade de pixels
+function createGrid() {
+    board.innerHTML = '';
+    for (let i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
+        const pixel = document.createElement('div');
+        pixel.classList.add('pixel');
+        
+        // Evento para pintar ao clicar
+        pixel.addEventListener('mousedown', () => {
+            pixel.style.backgroundColor = colorPicker.value;
+        });
+
+        // Bônus: Pintar ao arrastar o mouse segurado
+        pixel.addEventListener('mouseover', (e) => {
+            if (e.buttons === 1) { // 1 significa botão esquerdo pressionado
+                pixel.style.backgroundColor = colorPicker.value;
+            }
+        });
+
+        board.appendChild(pixel);
+    }
+}
+
+// 2. Botão de Limpar (Volta tudo para branco)
+clearBtn.addEventListener('click', () => {
+    const pixels = document.querySelectorAll('.pixel');
+    pixels.forEach(pixel => pixel.style.backgroundColor = '#ffffff');
+});
+
+// 3. Exportar para PNG usando Canvas HTML5
+exportBtn.addEventListener('click', () => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Define o tamanho da imagem de saída (ex: 256x256 pixels reais para não ficar minúsculo)
+    const scale = 16; 
+    canvas.width = GRID_SIZE * scale;
+    canvas.height = GRID_SIZE * scale;
+
+    const pixels = document.querySelectorAll('.pixel');
+
+    pixels.forEach((pixel, index) => {
+        const x = (index % GRID_SIZE) * scale;
+        const y = Math.floor(index / GRID_SIZE) * scale;
+        
+        // Pega a cor atual do pixel (se não tiver, assume branco)
+        ctx.fillStyle = pixel.style.backgroundColor || '#ffffff';
+        ctx.fillRect(x, y, scale, scale);
+    });
+
+    // Cria o link de download
+    const link = document.createElement('a');
+    link.download = 'minha-pixel-art.png';
+    link.href = canvas.toDataURL();
+    link.click();
+});
+
+// Inicializa a grade ao carregar a página
+createGrid();
