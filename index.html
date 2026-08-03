@@ -8,124 +8,49 @@ Uma paleta baseada na teoria das cores é um conjunto de cores selecionadas com 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Regra de Cor 60-30-10 Interativa</title>
+  <title>Regra 60-30-10 Interativa</title>
   <style>
     :root {
-      --dominant-color: #f4f4f9;  /* 60% Dominante */
-      --secondary-color: #2c3e50; /* 30% Secundária */
-      --accent-color: #e74c3c;    /* 10% Destaque */
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      --dominant-color: #f4f4f9;
+      --secondary-color: #2c3e50;
+      --accent-color: #e74c3c;
     }
 
     body {
       background-color: var(--dominant-color);
       color: var(--secondary-color);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      transition: background-color 0.3s ease;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      transition: all 0.3s ease;
     }
 
-    /* Painel de Controle (Fixo no topo) */
     .controls {
       background: #ffffff;
-      padding: 15px 20px;
-      display: flex;
-      gap: 20px;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      flex-wrap: wrap;
-    }
-
-    .control-group {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-weight: bold;
-      font-size: 0.9rem;
-    }
-
-    .control-group input[type="color"] {
-      border: none;
-      width: 35px;
-      height: 35px;
-      cursor: pointer;
-      border-radius: 5px;
-    }
-
-    /* Barra Visual de Proporção */
-    .ratio-bar {
-      display: flex;
-      width: 100%;
-      height: 12px;
-      margin-top: 10px;
-      border-radius: 6px;
-      overflow: hidden;
-    }
-
-    .ratio-60 { width: 60%; background-color: var(--dominant-color); border: 1px solid #ccc; }
-    .ratio-30 { width: 30%; background-color: var(--secondary-color); }
-    .ratio-10 { width: 10%; background-color: var(--accent-color); }
-
-    /* Exemplo de Layout Aplicado */
-    header {
-      background-color: var(--secondary-color);
-      color: #ffffff;
-      padding: 2rem;
-      text-align: center;
-      transition: background-color 0.3s ease;
-    }
-
-    main {
-      flex: 1;
-      max-width: 900px;
-      margin: 40px auto;
-      padding: 20px;
-      width: 100%;
-    }
-
-    .card {
-      background-color: #ffffff;
-      border-left: 6px solid var(--secondary-color);
-      padding: 25px;
+      padding: 15px;
       border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       margin-bottom: 20px;
     }
 
-    .btn-accent {
-      background-color: var(--accent-color);
-      color: #ffffff;
-      border: none;
-      padding: 12px 24px;
-      font-size: 1rem;
-      font-weight: bold;
+    .card {
+      background: white;
+      padding: 20px;
+      border-left: 5px solid var(--secondary-color);
       border-radius: 6px;
-      cursor: pointer;
-      transition: background-color 0.3s ease, transform 0.1s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
 
-    .btn-accent:hover {
-      opacity: 0.9;
-      transform: translateY(-2px);
-    }
-
-    .tag-accent {
+    .btn {
       background-color: var(--accent-color);
-      color: #ffffff;
-      padding: 4px 10px;
-      border-radius: 12px;
-      font-size: 0.8rem;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
       font-weight: bold;
     }
   </style>
@@ -133,62 +58,31 @@ Uma paleta baseada na teoria das cores é um conjunto de cores selecionadas com 
 <body>
 
   <div class="controls">
-    <div class="control-group">
-      <label for="domColor">60% Dominante:</label>
-      <input type="color" id="domColor" value="#f4f4f9">
-    </div>
-
-    <div class="control-group">
-      <label for="secColor">30% Secundária:</label>
-      <input type="color" id="secColor" value="#2c3e50">
-    </div>
-
-    <div class="control-group">
-      <label for="accColor">10% Destaque (Accent):</label>
-      <input type="color" id="accColor" value="#e74c3c">
-    </div>
-
-    <div style="width: 100%; max-width: 500px;">
-      <div class="ratio-bar">
-        <div class="ratio-60" title="60% Dominante"></div>
-        <div class="ratio-30" title="30% Secundária"></div>
-        <div class="ratio-10" title="10% Destaque"></div>
-      </div>
-    </div>
+    <label>60% Dominante: <input type="color" id="dom" value="#f4f4f9"></label>
+    <label>30% Secundária: <input type="color" id="sec" value="#2c3e50"></label>
+    <label>10% Destaque: <input type="color" id="acc" value="#e74c3c"></label>
   </div>
 
-  <header>
-    <h1>Simulador da Regra 60-30-10</h1>
-    <p>Veja como o equilíbrio de cores transforma o visual da interface</p>
-  </header>
-
-  <main>
-    <div class="card">
-      <span class="tag-accent">NOVO</span>
-      <h2 style="margin: 10px 0;">Como funciona a proporção?</h2>
-      <p style="margin-bottom: 15px; line-height: 1.6;">
-        <strong>60% (Cor Dominante):</strong> Usada no fundo principal e áreas neutras.<br>
-        <strong>30% (Cor Secundária):</strong> Usada em cabeçalhos, cards e textos principais.<br>
-        <strong>10% (Cor de Destaque):</strong> Reservada para botões de ação (CTA), links e badges para atrair o olhar.
-      </p>
-      <button class="btn-accent">Clique de Ação (10%)</button>
-    </div>
-  </main>
+  <div class="card">
+    <h2>Exemplo Visual</h2>
+    <p>Esta caixa demonstra a harmonia entre o fundo (60%), textos/estruturas (30%) e o botão de ação (10%).</p>
+    <button class="btn">Botão de Ação (10%)</button>
+  </div>
 
   <script>
-    const domColorInput = document.getElementById('domColor');
-    const secColorInput = document.getElementById('secColor');
-    const accColorInput = document.getElementById('accColor');
+    const dom = document.getElementById('dom');
+    const sec = document.getElementById('sec');
+    const acc = document.getElementById('acc');
 
-    function updateColors() {
-      document.documentElement.style.setProperty('--dominant-color', domColorInput.value);
-      document.documentElement.style.setProperty('--secondary-color', secColorInput.value);
-      document.documentElement.style.setProperty('--accent-color', accColorInput.value);
+    function update() {
+      document.documentElement.style.setProperty('--dominant-color', dom.value);
+      document.documentElement.style.setProperty('--secondary-color', sec.value);
+      document.documentElement.style.setProperty('--accent-color', acc.value);
     }
 
-    domColorInput.addEventListener('input', updateColors);
-    secColorInput.addEventListener('input', updateColors);
-    accColorInput.addEventListener('input', updateColors);
+    dom.addEventListener('input', update);
+    sec.addEventListener('input', update);
+    acc.addEventListener('input', update);
   </script>
 </body>
 </html>
