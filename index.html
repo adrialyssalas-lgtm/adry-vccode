@@ -86,3 +86,216 @@ Uma paleta baseada na teoria das cores é um conjunto de cores selecionadas com 
   </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Balanceador de Colores 60-30-10</title>
+  <style>
+    /* Variables globales para los 3 colores */
+    :root {
+      --color-60: #f4f4f9; /* Dominante (60%) */
+      --color-30: #1e293b; /* Secundario (30%) */
+      --color-10: #ff4757; /* Acento (10%) */
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+
+    body {
+      background-color: var(--color-60);
+      color: var(--color-30);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+      transition: background-color 0.3s ease;
+    }
+
+    .container {
+      max-width: 600px;
+      width: 100%;
+      background: #ffffff;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    /* Panel de controles */
+    .color-pickers {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .picker-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+
+    .picker-card input[type="color"] {
+      -webkit-appearance: none;
+      border: none;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    .picker-card input[type="color"]::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+
+    .picker-card input[type="color"]::-webkit-color-swatch {
+      border: none;
+      border-radius: 50%;
+    }
+
+    /* Barra visual de balance */
+    .balance-bar-container {
+      margin-bottom: 2rem;
+    }
+
+    .balance-label {
+      font-size: 0.9rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .balance-bar {
+      display: flex;
+      height: 20px;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .segment-60 { width: 60%; background-color: var(--color-60); border-right: 1px solid #ddd; }
+    .segment-30 { width: 30%; background-color: var(--color-30); }
+    .segment-10 { width: 10%; background-color: var(--color-10); }
+
+    /* Vista previa interactiva */
+    .preview-card {
+      background-color: var(--color-60);
+      border: 2px solid var(--color-30);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .preview-card h2 {
+      color: var(--color-30);
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .preview-card p {
+      color: var(--color-30);
+      font-size: 0.9rem;
+      opacity: 0.8;
+      margin-bottom: 1.2rem;
+    }
+
+    /* Botón Interactivo de Acento (10%) */
+    .interactive-btn {
+      background-color: var(--color-10);
+      color: #ffffff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 0.95rem;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    .interactive-btn:hover {
+      transform: translateY(-2px);
+      opacity: 0.9;
+    }
+
+    .interactive-btn:active {
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Balanceador de Color (60-30-10)</h1>
+
+    <div class="color-pickers">
+      <div class="picker-card">
+        <label>60% Fondo</label>
+        <input type="color" id="c60" value="#f4f4f9">
+      </div>
+      <div class="picker-card">
+        <label>30% Estructura</label>
+        <input type="color" id="c30" value="#1e293b">
+      </div>
+      <div class="picker-card">
+        <label>10% Botón</label>
+        <input type="color" id="c10" value="#ff4757">
+      </div>
+    </div>
+
+    <div class="balance-bar-container">
+      <span class="balance-label">Proporción del diseño:</span>
+      <div class="balance-bar">
+        <div class="segment-60" title="60% Dominante"></div>
+        <div class="segment-30" title="30% Secundario"></div>
+        <div class="segment-10" title="10% Acento"></div>
+      </div>
+    </div>
+
+    <div class="preview-card">
+      <h2>Tarjeta de prueba</h2>
+      <p>El botón usa el 10% para capturar la atención de inmediato.</p>
+      <button class="interactive-btn" onclick="alert('¡El botón del 10% funciona!')">
+        ¡Haz clic aquí!
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Capturamos los selectores
+    const color60 = document.getElementById('c60');
+    const color30 = document.getElementById('c30');
+    const color10 = document.getElementById('c10');
+
+    // Función que actualiza las variables CSS en tiempo real
+    function updateColors() {
+      document.documentElement.style.setProperty('--color-60', color60.value);
+      document.documentElement.style.setProperty('--color-30', color30.value);
+      document.documentElement.style.setProperty('--color-10', color10.value);
+    }
+
+    // Escuchamos el evento de cambio
+    color60.addEventListener('input', updateColors);
+    color30.addEventListener('input', updateColors);
+    color10.addEventListener('input', updateColors);
+  </script>
+
+</body>
+</html>
