@@ -2,127 +2,65 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Perfect Balance Studio</title>
   <style>
     body {
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Segoe UI', sans-serif;
       text-align: center;
       background-color: #121212;
-      color: #ffffff;
+      color: #fff;
     }
-
     .titulo-arcoiris {
       font-size: 3rem;
       font-weight: 900;
       text-transform: uppercase;
       margin-top: 40px;
-      background: linear-gradient(
-        45deg, 
-        #ff0000, #ff7300, #fffb00, 
-        #48ff00, #00ffd5, #002bff, 
-        #7a00ff, #ff00c8
-      );
+      background: linear-gradient(45deg,#ff0000,#ff7300,#fffb00,#48ff00,#00ffd5,#002bff,#7a00ff,#ff00c8);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
       color: transparent;
     }
-
-    .explicacao {
-      max-width: 800px;
-      margin: 20px auto;
-      font-size: 1.2rem;
-      line-height: 1.6;
-    }
-
-    .botoes {
-      margin: 40px auto;
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-    }
-
-    .btn {
-      border: none;
-      padding: 15px 25px;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: transform 0.2s ease;
-    }
-
-    .btn:hover {
-      transform: scale(1.05);
-    }
-
-    .btn-60 { background-color: #f4f4f9; color: #000; }
-    .btn-30 { background-color: #1e293b; color: #fff; }
-    .btn-10 { background-color: #ff4757; color: #fff; }
+    .botoes { margin: 40px auto; display: flex; justify-content: center; gap: 20px; }
+    .btn { border: none; padding: 15px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    .btn-60 { background:#f4f4f9; color:#000; }
+    .btn-30 { background:#1e293b; color:#fff; }
+    .btn-10 { background:#ff4757; color:#fff; }
   </style>
 </head>
 <body>
-
   <h1 class="titulo-arcoiris">PERFECT BALANCE STUDIO</h1>
+  <p>A regra <strong>60-30-10</strong> ajuda a equilibrar cores em projetos visuais.</p>
 
-  <div class="explicacao">
-    <p>
-      A regra <strong>60-30-10</strong> é um padrão de referência para o equilíbrio de cores.  
-      Ela destina <strong>60%</strong> à cor dominante, <strong>30%</strong> à cor secundária e <strong>10%</strong> à cor de destaque.  
-      Designers utilizam essa proporção para criar harmonia visual em projetos.
-    </p>
-  </div>
-
-  <!-- Botões personalizados -->
   <div class="botoes">
-    <button class="btn btn-60" onclick="aplicarFundo('60')">60% Dominante</button>
-    <button class="btn btn-30" onclick="aplicarFundo('30')">30% Secundária</button>
-    <button class="btn btn-10" onclick="aplicarFundo('10')">10% Destaque</button>
+    <button class="btn btn-60" onclick="gerarIA('Paisagem com árvores e flores, regra 60-30-10')">🌳 Árvores</button>
+    <button class="btn btn-30" onclick="gerarIA('Cidade estilizada com cores 60-30-10')">🏙️ Cidade</button>
+    <button class="btn btn-10" onclick="gerarIA('Flores coloridas em harmonia 60-30-10')">🌸 Flores</button>
   </div>
 
   <script>
-    function aplicarFundo(tipo) {
-      if (tipo === '60') {
-        document.body.style.background = "linear-gradient(60deg, #f4f4f9 60%, #1e293b 40%)";
-      } else if (tipo === '30') {
-        document.body.style.background = "linear-gradient(90deg, #1e293b 30%, #f4f4f9 70%)";
-      } else if (tipo === '10') {
-        document.body.style.background = "linear-gradient(120deg, #ff4757 10%, #f4f4f9 90%)";
-      }
+    async function gerarIA(prompt) {
+      const resposta = await fetch("https://api.openai.com/v1/images/generations", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer SUA_CHAVE_AQUI" // ⚠️ coloque sua chave aqui
+        },
+        body: JSON.stringify({
+          model: "dall-e-3",
+          prompt: prompt,
+          size: "1024x1024"
+        })
+      });
+
+      const dados = await resposta.json();
+      const urlImagem = dados.data[0].url;
+      document.body.style.backgroundImage = `url(${urlImagem})`;
+      document.body.style.backgroundSize = "cover";
     }
   </script>
-
 </body>
 </html>
-<canvas id="arte" width="800" height="600"></canvas>
-
-<script>
-function gerarArte() {
-  const canvas = document.getElementById("arte");
-  const ctx = canvas.getContext("2d");
-
-  // Fundo dominante (60%)
-  ctx.fillStyle = "#f4f4f9";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  // Estrutura secundária (30%)
-  ctx.fillStyle = "#1e293b";
-  for (let i = 0; i < 30; i++) {
-    ctx.fillRect(Math.random()*800, Math.random()*600, 50, 50);
-  }
-
-  // Destaque (10%)
-  ctx.fillStyle = "#ff4757";
-  for (let i = 0; i < 10; i++) {
-    ctx.beginPath();
-    ctx.arc(Math.random()*800, Math.random()*600, 20, 0, Math.PI*2);
-    ctx.fill();
-  }
-}
-</script>
-
-<button onclick="gerarArte()">Gerar Arte com 60-30-10</button>
 
