@@ -348,33 +348,6 @@ Uma paleta baseada na teoria das cores é um conjunto de cores selecionadas com 
 
 </body>
 </html>
-const color60 = document.getElementById('c60');
-const color30 = document.getElementById('c30');
-const color10 = document.getElementById('c10');
-
-function updateColors() {
-  document.documentElement.style.setProperty('--color-60', color60.value);
-  document.documentElement.style.setProperty('--color-30', color30.value);
-  document.documentElement.style.setProperty('--color-10', color10.value);
-}
-
-// Función para generar un color hexadecimal aleatorio
-function getRandomColor() {
-  const letters = '0123456789ABCDEF';
-  let color = '#';
-  for (let i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
-}
-
-// Función que se ejecuta al presionar el botón
-function generarPaletaAleatoria() {
-  color60.value = getRandomColor();
-  color30.value = getRandomColor();
-  color10.value = getRandomColor();
-  updateColors(); // Aplica los nuevos colores
-}
 
 color60.addEventListener('input', updateColors);
 color30.addEventListener('input', updateColors);
