@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,27 +8,22 @@
     body {
       margin: 0;
       padding: 0;
-      background-color: #121212;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       text-align: center;
+      background-color: #121212;
       color: #ffffff;
     }
 
     .titulo-arcoiris {
-      font-size: 4rem;
+      font-size: 3rem;
       font-weight: 900;
       text-transform: uppercase;
-      margin-top: 50px;
+      margin-top: 40px;
       background: linear-gradient(
         45deg, 
-        #ff0000, 
-        #ff7300, 
-        #fffb00, 
-        #48ff00, 
-        #00ffd5, 
-        #002bff, 
-        #7a00ff, 
-        #ff00c8
+        #ff0000, #ff7300, #fffb00, 
+        #48ff00, #00ffd5, #002bff, 
+        #7a00ff, #ff00c8
       );
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -36,52 +31,98 @@
       color: transparent;
     }
 
-    .texto-explicativo {
+    .explicacao {
       max-width: 800px;
-      margin: 40px auto;
+      margin: 20px auto;
       font-size: 1.2rem;
       line-height: 1.6;
     }
 
-    .container {
-      max-width: 600px;
-      margin: 60px auto; /* <-- Esto lo baja más */
-      background: #ffffff;
-      color: #000000;
-      padding: 2rem;
-      border-radius: 16px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    .botoes {
+      margin: 40px auto;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
     }
 
-    .interactive-btn {
-      background-color: #ff4757;
-      color: #ffffff;
+    .btn {
       border: none;
-      padding: 12px 24px;
+      padding: 15px 25px;
       border-radius: 8px;
       font-weight: bold;
       cursor: pointer;
+      font-size: 1rem;
+      transition: transform 0.2s ease;
     }
+
+    .btn:hover {
+      transform: scale(1.05);
+    }
+
+    .btn-60 { background-color: #f4f4f9; color: #000; }
+    .btn-30 { background-color: #1e293b; color: #fff; }
+    .btn-10 { background-color: #ff4757; color: #fff; }
   </style>
 </head>
 <body>
 
   <h1 class="titulo-arcoiris">PERFECT BALANCE STUDIO</h1>
 
-  <div class="texto-explicativo">
+  <div class="explicacao">
     <p>
-      La regla 60-30-10 es el estándar de referencia para el equilibrio de colores. 
-      Destina 60% a la dominante, 30% a la secundaria y 10% al acento. 
-      Una paleta basada en la teoría del color garantiza armonía combinando primarias, secundarias y terciarias.
+      A regra <strong>60-30-10</strong> é um padrão de referência para o equilíbrio de cores.  
+      Ela destina <strong>60%</strong> à cor dominante, <strong>30%</strong> à cor secundária e <strong>10%</strong> à cor de destaque.  
+      Designers utilizam essa proporção para criar harmonia visual em projetos.
     </p>
   </div>
 
-  <!-- Aquí va el cuadro de balanceador más abajo -->
-  <div class="container">
-    <h2>Balanceador de Color (60-30-10)</h2>
-    <p>Ejemplo visual: fondo (60%), estructura (30%) y botón de acción (10%).</p>
-    <button class="interactive-btn">¡Haz clic aquí!</button>
+  <!-- Botões personalizados -->
+  <div class="botoes">
+    <button class="btn btn-60" onclick="aplicarFundo('60')">60% Dominante</button>
+    <button class="btn btn-30" onclick="aplicarFundo('30')">30% Secundária</button>
+    <button class="btn btn-10" onclick="aplicarFundo('10')">10% Destaque</button>
   </div>
+
+  <script>
+    function aplicarFundo(tipo) {
+      if (tipo === '60') {
+        document.body.style.background = "linear-gradient(60deg, #f4f4f9 60%, #1e293b 40%)";
+      } else if (tipo === '30') {
+        document.body.style.background = "linear-gradient(90deg, #1e293b 30%, #f4f4f9 70%)";
+      } else if (tipo === '10') {
+        document.body.style.background = "linear-gradient(120deg, #ff4757 10%, #f4f4f9 90%)";
+      }
+    }
+  </script>
 
 </body>
 </html>
+<canvas id="arte" width="800" height="600"></canvas>
+
+<script>
+function gerarArte() {
+  const canvas = document.getElementById("arte");
+  const ctx = canvas.getContext("2d");
+
+  // Fundo dominante (60%)
+  ctx.fillStyle = "#f4f4f9";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Estrutura secundária (30%)
+  ctx.fillStyle = "#1e293b";
+  for (let i = 0; i < 30; i++) {
+    ctx.fillRect(Math.random()*800, Math.random()*600, 50, 50);
+  }
+
+  // Destaque (10%)
+  ctx.fillStyle = "#ff4757";
+  for (let i = 0; i < 10; i++) {
+    ctx.beginPath();
+    ctx.arc(Math.random()*800, Math.random()*600, 20, 0, Math.PI*2);
+    ctx.fill();
+  }
+}
+</script>
+
+<button onclick="gerarArte()">Gerar Arte com 60-30-10</button>
+
