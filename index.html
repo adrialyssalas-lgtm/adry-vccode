@@ -23,44 +23,128 @@
       background-clip: text;
       color: transparent;
     }
-    .botoes { margin: 40px auto; display: flex; justify-content: center; gap: 20px; }
-    .btn { border: none; padding: 15px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    .explicacao {
+      max-width: 800px;
+      margin: 20px auto;
+      font-size: 1.2rem;
+      line-height: 1.6;
+    }
+    .botoes {
+      margin: 30px auto;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: transform 0.2s ease;
+    }
+    .btn:hover { transform: scale(1.05); }
     .btn-60 { background:#f4f4f9; color:#000; }
     .btn-30 { background:#1e293b; color:#fff; }
     .btn-10 { background:#ff4757; color:#fff; }
+    canvas { display:block; margin:20px auto; border:2px solid #fff; }
   </style>
 </head>
 <body>
-  <h1 class="titulo-arcoiris">PERFECT BALANCE STUDIO</h1>
-  <p>A regra <strong>60-30-10</strong> ajuda a equilibrar cores em projetos visuais.</p>
 
+  <h1 class="titulo-arcoiris">PERFECT BALANCE STUDIO</h1>
+
+  <div class="explicacao">
+    <p>
+      A regra <strong>60-30-10</strong> é um padrão de referência para o equilíbrio de cores.  
+      Ela destina <strong>60%</strong> à cor dominante, <strong>30%</strong> à cor secundária e <strong>10%</strong> à cor de destaque.  
+      Designers utilizam essa proporção para criar harmonia visual em projetos.
+    </p>
+  </div>
+
+  <!-- Botões de proporção -->
   <div class="botoes">
-    <button class="btn btn-60" onclick="gerarIA('Paisagem com árvores e flores, regra 60-30-10')">🌳 Árvores</button>
-    <button class="btn btn-30" onclick="gerarIA('Cidade estilizada com cores 60-30-10')">🏙️ Cidade</button>
-    <button class="btn btn-10" onclick="gerarIA('Flores coloridas em harmonia 60-30-10')">🌸 Flores</button>
+    <button class="btn btn-60" onclick="aplicarFundo('60')">60% Dominante</button>
+    <button class="btn btn-30" onclick="aplicarFundo('30')">30% Secundária</button>
+    <button class="btn btn-10" onclick="aplicarFundo('10')">10% Destaque</button>
+  </div>
+
+  <!-- Canvas para desenhar -->
+  <canvas id="fundo" width="800" height="500"></canvas>
+
+  <!-- Botões de arte -->
+  <div class="botoes">
+    <button class="btn btn-60" onclick="gerarArte('arvores')">🌳 Árvores</button>
+    <button class="btn btn-30" onclick="gerarArte('flores')">🌸 Flores</button>
+    <button class="btn btn-10" onclick="gerarArte('cidade')">🏙️ Cidade</button>
   </div>
 
   <script>
-    async function gerarIA(prompt) {
-      const resposta = await fetch("https://api.openai.com/v1/images/generations", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer SUA_CHAVE_AQUI" // ⚠️ coloque sua chave aqui
-        },
-        body: JSON.stringify({
-          model: "dall-e-3",
-          prompt: prompt,
-          size: "1024x1024"
-        })
-      });
+    // Botões de proporção mudam o gradiente do body
+    function aplicarFundo(tipo) {
+      if (tipo === '60') {
+        document.body.style.background = "linear-gradient(60deg, #f4f4f9 60%, #1e293b 40%)";
+      } else if (tipo === '30') {
+        document.body.style.background = "linear-gradient(90deg, #1e293b 30%, #f4f4f9 70%)";
+      } else if (tipo === '10') {
+        document.body.style.background = "linear-gradient(120deg, #ff4757 10%, #f4f4f9 90%)";
+      }
+    }
 
-      const dados = await resposta.json();
-      const urlImagem = dados.data[0].url;
-      document.body.style.backgroundImage = `url(${urlImagem})`;
-      document.body.style.backgroundSize = "cover";
+    // Canvas para desenhar arte
+    function gerarArte(tipo) {
+      const canvas = document.getElementById("fundo");
+      const ctx = canvas.getContext("2d");
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      if (tipo === "arvores") {
+        // Céu
+        ctx.fillStyle = "#87CEEB";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        // Gramado
+        ctx.fillStyle = "#228B22";
+        ctx.fillRect(0, canvas.height-100, canvas.width, 100);
+        // Árvores
+        for (let i = 0; i < 8; i++) {
+          let x = Math.random()*canvas.width;
+          ctx.fillStyle = "#8B4513"; // tronco
+          ctx.fillRect(x, canvas.height-100, 20, 60);
+          ctx.fillStyle = "#006400"; // copa
+          ctx.beginPath();
+          ctx.arc(x+10, canvas.height-120, 40, 0, Math.PI*2);
+          ctx.fill();
+        }
+      } else if (tipo === "flores") {
+        ctx.fillStyle = "#f4f4f9";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < 40; i++) {
+          let x = Math.random()*canvas.width;
+          let y = Math.random()*canvas.height;
+          ctx.fillStyle = ["#FF69B4","#FFD700","#FF4500"][Math.floor(Math.random()*3)];
+          ctx.beginPath();
+          ctx.arc(x, y, 8, 0, Math.PI*2);
+          ctx.fill();
+        }
+      } else if (tipo === "cidade") {
+        ctx.fillStyle = "#1e293b";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < 12; i++) {
+          let x = i*65;
+          let h = Math.random()*300+100;
+          ctx.fillStyle = "#2c3e50";
+          ctx.fillRect(x, canvas.height-h, 50, h);
+          ctx.fillStyle = "#FFD700"; // janelas
+          for (let j = 0; j < h/40; j++) {
+            ctx.fillRect(x+10, canvas.height-h+10+j*40, 10, 10);
+          }
+        }
+      }
     }
   </script>
+
 </body>
 </html>
+
 
