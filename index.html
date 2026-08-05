@@ -1,3 +1,37 @@
+meu-projeto/
+│── index.html      → frontend (site)
+│── server.js       → backend (Node.js + Express)
+│── .env            → chave da API
+│── package.json
+import express from "express";
+import fetch from "node-fetch";
+import dotenv from "dotenv";
+
+dotenv.config();
+const app = express();
+app.use(express.json());
+
+app.post("/gerar-imagem", async (req, res) => {
+  const { prompt } = req.body;
+
+  const resposta = await fetch("https://api.openai.com/v1/images/generations", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
+    },
+    body: JSON.stringify({
+      model: "dall-e-3",
+      prompt: prompt,
+      size: "1024x1024"
+    })
+  });
+
+  const dados = await resposta.json();
+  res.json(dados);
+});
+
+app.listen(3000, () => console.log("Servidor rodando na porta 3000 🚀"));
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -49,7 +83,6 @@
     .btn-60 { background:#f4f4f9; color:#000; }
     .btn-30 { background:#1e293b; color:#fff; }
     .btn-10 { background:#ff4757; color:#fff; }
-    canvas { display:block; margin:20px auto; border:2px solid #fff; }
   </style>
 </head>
 <body>
@@ -58,7 +91,7 @@
 
   <div class="explicacao">
     <p>
-      A regra <strong>60-30-10</strong> é um padrão de referência para o equilíbrio de cores.  
+      A regra <strong id="regra">60-30-10</strong> é um padrão de referência para o equilíbrio de cores.  
       Ela destina <strong>60%</strong> à cor dominante, <strong>30%</strong> à cor secundária e <strong>10%</strong> à cor de destaque.  
       Designers utilizam essa proporção para criar harmonia visual em projetos.
     </p>
@@ -66,86 +99,46 @@
 
   <!-- Botões de proporção -->
   <div class="botoes">
-    <button class="btn btn-60" onclick="aplicarFundo('60')">60% Dominante</button>
-    <button class="btn btn-30" onclick="aplicarFundo('30')">30% Secundária</button>
-    <button class="btn btn-10" onclick="aplicarFundo('10')">10% Destaque</button>
+    <button class="btn btn-60" onclick="gerarIA('Paisagem de floresta estilizada com cores 60-30-10')">🌳 Floresta</button>
+    <button class="btn btn-30" onclick="gerarIA('Jardim artístico com flores em proporção 60-30-10')">🌸 Jardim</button>
+    <button class="btn btn-10" onclick="gerarIA('Cidade estilizada ao entardecer com cores 60-30-10')">🏙️ Cidade</button>
   </div>
 
-  <!-- Canvas para desenhar -->
-  <canvas id="fundo" width="800" height="500"></canvas>
-
-  <!-- Botões de arte -->
-  <div class="botoes">
-    <button class="btn btn-60" onclick="gerarArte('arvores')">🌳 Floresta</button>
-    <button class="btn btn-30" onclick="gerarArte('flores')">🌸 Jardim</button>
-    <button class="btn btn-10" onclick="gerarArte('cidade')">🏙️ Cidade</button>
+  <!-- Campo para personalizar a regra -->
+  <div style="margin:20px;">
+    <label for="customRule">Personalizar regra de cores:</label>
+    <input id="customRule" type="text" placeholder="Ex: 50-40-10">
+    <button onclick="atualizarRegra()">Atualizar</button>
   </div>
 
   <script>
-    // Botões de proporção mudam o gradiente do body
-    function aplicarFundo(tipo) {
-      if (tipo === '60') {
-        document.body.style.background = "linear-gradient(60deg, #f4f4f9 60%, #1e293b 40%)";
-      } else if (tipo === '30') {
-        document.body.style.background = "linear-gradient(90deg, #1e293b 30%, #f4f4f9 70%)";
-      } else if (tipo === '10') {
-        document.body.style.background = "linear-gradient(120deg, #ff4757 10%, #f4f4f9 90%)";
+    function atualizarRegra() {
+      const valor = document.getElementById("customRule").value;
+      if (valor) {
+        document.getElementById("regra").innerText = valor;
       }
     }
 
-    // Canvas para desenhar arte estilizada
-    function gerarArte(tipo) {
-      const canvas = document.getElementById("fundo");
-      const ctx = canvas.getContext("2d");
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    async function gerarIA(prompt) {
+      const regra = document.getElementById("regra").innerText;
+      const resposta = await fetch("http://localhost:3000/gerar-imagem", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: prompt + " com proporção " + regra })
+      });
 
-      if (tipo === "arvores") {
-        // Floresta estilizada
-        ctx.fillStyle = "#87CEEB"; // céu
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "#228B22"; // chão
-        ctx.fillRect(0, canvas.height-150, canvas.width, 150);
-        // árvores com efeito artístico
-        for (let i = 0; i < 12; i++) {
-          let x = Math.random()*canvas.width;
-          ctx.fillStyle = "#2e1d0e"; // tronco
-          ctx.fillRect(x, canvas.height-150, 15, 100);
-          ctx.fillStyle = "#006400"; // copa
-          ctx.beginPath();
-          ctx.arc(x+7, canvas.height-170, 50, 0, Math.PI*2);
-          ctx.fill();
-        }
-      } else if (tipo === "flores") {
-        // Jardim estilizado
-        ctx.fillStyle = "#f4f4f9";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        for (let i = 0; i < 60; i++) {
-          let x = Math.random()*canvas.width;
-          let y = Math.random()*canvas.height;
-          ctx.fillStyle = ["#FF69B4","#FFD700","#FF4500","#ADFF2F"][Math.floor(Math.random()*4)];
-          ctx.beginPath();
-          ctx.arc(x, y, 12, 0, Math.PI*2);
-          ctx.fill();
-        }
-      } else if (tipo === "cidade") {
-        // Cidade estilizada
-        ctx.fillStyle = "#1e293b"; // céu noturno
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        for (let i = 0; i < 15; i++) {
-          let x = i*55;
-          let h = Math.random()*300+100;
-          ctx.fillStyle = "#2c3e50";
-          ctx.fillRect(x, canvas.height-h, 40, h);
-          ctx.fillStyle = "#FFD700"; // janelas iluminadas
-          for (let j = 0; j < h/50; j++) {
-            ctx.fillRect(x+10, canvas.height-h+10+j*50, 8, 8);
-          }
-        }
-      }
+      const dados = await resposta.json();
+      const urlImagem = dados.data[0].url;
+
+      document.body.style.backgroundImage = `url(${urlImagem})`;
+      document.body.style.backgroundSize = "cover";
     }
   </script>
-
 </body>
 </html>
+npm init -y
+npm install express node-fetch dotenv
+node server.js
+
 
 
